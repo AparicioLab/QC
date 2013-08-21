@@ -1,5 +1,5 @@
 ##################################################
-##  Script to plot bionomial results from 
+##  Script to plot binomial results from 
 ##             Cell mixing Expts				
 ##			
 ##	 Dr Damian Yap , Research Associate				
@@ -9,8 +9,7 @@
 
 # These commands must be specifed in order for this script to work
 # source("http://www.bioconductor.org/biocLite.R"); source#("http://www.bioconductor.org/biocLite.R"); biocLite("BSgenome"); biocLite#("BSgenome.Hsapiens.UCSC.hg19"); library
-
-('BSgenome.Hsapiens.UCSC.hg19')
+#('BSgenome.Hsapiens.UCSC.hg19')
 # install.packages("XLConnect")
 
 library(Biostrings)
@@ -110,8 +109,9 @@ legend[n+1]="unclassified"
 fill=colnames(table(posinfo[2:3]))
 fill[n+1]=rowcol[n+1]
 
-##################################################
-# Read and Process the data for clustering (removing NAs)
+###########################################################
+# Read and Process the data for clustering (removing NAs) #
+###########################################################
 
 # Input #1 is the primer excel sheet
 setwd(dir)
@@ -122,7 +122,7 @@ file_names = list.files(pattern=pat)
 files = paste(dir,file_names, sep="\\")
 maxfiles<-length(files)
 
-############# READINGS OF FILES ONE BY ONE #################
+############# READING OF FILES ONE BY ONE #################
 
 for ( fi in seq(maxfiles) )
 	{
@@ -170,13 +170,10 @@ ff <-tertf[rowSums(is.na(tertf))!=ncol(tertf), ]
 
 ######################################################################
 
-# hct116=hct=ef
-# htert184=htert=ff
+# hct116=hct=ef=hctplot
+# htert184=htert=ff=htertplot
 
-celllines = c("hct","htert")
-data = c("ef", "ff")
-
-##############################################
+######################################################################
 
 # Label according to samplesheet
 # Select n colors (first 2 colors from row Col ie cell lines)
@@ -335,7 +332,6 @@ xaxislab2=paste("Samples from Analysis Date", date, sep=" ")
 pdf("HCT116_BioNom_cluster.pdf", width=7, height=8)
 
 heatmap.2(hctplot, dendrogram = c("column"), Rowv = FALSE, Colv=TRUE, main=title, xlab=xaxislab2, ylab="Positions", scale="none", key = TRUE, cexCol=0.8, cexRow=0.6, col = 
-
 hmcols, RowSideColors=sortedef$Col, ColSideColors=csce$Col, trace="none")
 
 legend("topright",legend=legend, fill=fill, border=TRUE, bty="o", y.intersp = 0.7, cex=0.7)
@@ -351,7 +347,6 @@ xaxislab2=paste("Samples from Analysis Date", date, sep=" ")
 pdf("hTert_BioNom_cluster.pdf", width=7, height=8)
 
 heatmap.2(htertplot, dendrogram = c("column"), Rowv = FALSE, Colv=TRUE, main=title, xlab=xaxislab2, ylab="Positions", scale="none", key = TRUE, cexCol=0.8, cexRow=0.6, col = 
-
 hmcols, RowSideColors=sortedff$Col, ColSideColors=csce$Col, trace="none")
 
 legend("topright",legend=legend, fill=fill, border=TRUE, bty="o", y.intersp = 0.7, cex=0.7)
