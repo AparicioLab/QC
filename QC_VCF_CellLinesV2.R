@@ -51,7 +51,7 @@ shared<-read.table(file="shared_pos.txt")
 shared$V3 <- "shared"
 
 # Read in Sample Names and Mixing proportions
-prop<-read.table(file="MiSeq samples 18 Jul.txt" ,sep="\t", header=TRUE)
+prop<-read.table(file="MiSeq samples 23 Oct.txt" ,sep="\t", header=TRUE)
 
 
 ####################################################################################################
