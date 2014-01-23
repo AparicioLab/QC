@@ -14,16 +14,16 @@ library(RColorBrewer)
 
 #####################################################################################################
 # To run this script change the setwd()
-setwd("C:\\Users\\dyap_000\\Documents\\R\\Cell_Lines_QC")
+setwd("C:\\Users\\dyap_000\\Documents\\R\\Cell_Lines_QC\\A6MFH")
 sample="S"
-run="A4HU0"
+run="A6MFH"
 #check="depth"
 check = "freq"
 #check = "calls"
 
 # Outputs
 # system('mkdir C:\\Users\\dyap_000\\Documents\\R\\SA494')
-dir="C:\\Users\\dyap_000\\Documents\\R\\Cell_Lines_QC"
+dir="C:\\Users\\dyap_000\\Documents\\R\\Cell_Lines_QC\\A6MFH"
 
 runname=paste(run,"run",sep="-")
 exptname=paste(sample,runname,sep="_")
