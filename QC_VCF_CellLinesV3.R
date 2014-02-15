@@ -52,7 +52,8 @@ shared<-read.table(file="shared_pos.txt")
 shared$V3 <- "shared"
 
 # Read in Sample Names and Mixing proportions
-prop<-read.table(file="MiSeq_samples.txt" ,sep="\t", header=TRUE)
+pname=paste(paste("Miseq_samples",run,sep="_"),"txt",sep=".")
+prop<-read.table(file=pname ,sep="\t", header=TRUE)
 
 
 ####################################################################################################
@@ -231,7 +232,7 @@ propinfo <- data.frame(	Sample = rep("", nrow(prop)),
 for (a in seq(nrow(prop)))
 	{
 	propinfo$Sample[a] <- prop$Sample_ID[a]
-	propinfo$line1tp[a] <- prop$line1[a]
+	propinfo$line1p[a] <- prop$line1[a]
 	propinfo$line2p[a] <- prop$line2[a]
 
 	if (prop$line1[a]*10000 < 1) 
