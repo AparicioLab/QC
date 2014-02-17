@@ -44,10 +44,10 @@ title=filename
 xaxislab=paste(sample, "Sample", sep=" ")
 
 # Read in all positions
-line1<-read.table(file="DAH55_pos.txt")
-line1$V3 <-"DAH55"
-line2<-read.table(file="DAH56_pos.txt")
-line2$V3<-"DAH56"
+htert<-read.table(file="DAH55_pos.txt")
+htert$V3 <-"DAH55"
+hct116<-read.table(file="DAH56_pos.txt")
+hct116$V3<-"DAH56"
 shared<-read.table(file="shared_pos.txt")
 shared$V3 <- "shared"
 
@@ -150,7 +150,7 @@ write.table(sum1,file=csvfile,sep=",",row.names=FALSE,col.names=TRUE)
 ## ie color label row side col as HCT, hTert or shared 
 
 # combine into one file
-hh<-rbind(line1,line2)
+hh<-rbind(hct116,htert)
 all<-rbind(shared,hh)
 
 # Select n colors (n+1 = for unclassfied)
@@ -220,26 +220,26 @@ ff[is.na(ff)] <- 0
 
 col2<-rowcol[1:2]
 
-colcols <- rev(colorRampPalette(brewer.pal(11,"PRGn"))(10000))
+colcols <- colorRampPalette(brewer.pal(11,"PRGn"))(10000)
 
 propinfo <- data.frame(	Sample = rep("", nrow(prop)),
-			line1p = rep("", nrow(prop)),
-		  line2p = rep("", nrow(prop)),
+			Tertp = rep("", nrow(prop)),
+			HCTp = rep("", nrow(prop)),
 			Col = rep("", nrow(prop)),
 			stringsAsFactors = FALSE)
 			
 
 for (a in seq(nrow(prop)))
 	{
-	propinfo$Sample[a] <- prop$Sample_ID[a]
-	propinfo$line1p[a] <- prop$line1[a]
-	propinfo$line2p[a] <- prop$line2[a]
+	propinfo$Sample[a] <- as.character(prop$Sample_ID[a])
+	propinfo$Tertp[a] <- prop$DAH55[a]
+	propinfo$HCTp[a] <- prop$DAH56[a]
 
-	if (prop$line1[a]*10000 < 1) 
+	if (prop$DAH55[a]*10000 < 1) 
 		{
 		propinfo$Col[a] <- colcols[1]
 		} else {
-			propinfo$Col[a] <- colcols[prop$line1[a]*10000]
+			propinfo$Col[a] <- colcols[prop$DAH55[a]*10000]
 			}
 	}
 
@@ -297,7 +297,7 @@ hmcols <- colorRampPalette(brewer.pal(11,"Spectral"))(100)
 
 ####################### PLOT ALL VARIANTS ########################################## 
 
-title="Two Cell Line Mixing Expt (All Var Freq)"
+title="DAH55,56 Cell Mixing Expt (All Var Freq)"
 
 xaxislab2=paste("Samples from Run", run, sep=" ")
 
@@ -347,7 +347,7 @@ for (j in seq(nrow(gf)))
 ######### HeatMaps2
 ## for selected variants
 
-title="Two Cell Line Mixing Expt (Sel Var Freq)"
+title="DAH55,56 Cell Mixing Expt (Sel Var Freq)"
 
 xaxislab2=paste("Samples from Run", run, sep=" ")
 
