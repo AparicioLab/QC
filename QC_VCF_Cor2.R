@@ -22,6 +22,8 @@ setwd(path)
 #########################################################################
 
 check="freq"
+createCounter <- function(value) { function(i) { value <<- value+i} }
+count <- createCounter(1)
 
 ############# DO NOT CHANGE ANYTHING BELOW THIS LINE #################
 
@@ -34,124 +36,63 @@ QC_list = lapply(file_names, read.csv, header = TRUE)
 # Change the number of samples
 
 # check with "list(QC_list)"
-samples <- length(QC_list)
+conditions <- length(QC_list)
 
-createCounter <- function(value) { function(i) { value <<- value+i} }
-count <- createCounter(1)
+# assume all have same no of samples
+sample1 <- ncol(QC_list[[1]])
+sample2 <- ncol(QC_list[[2]])
 
+if (sample1 == sample2)	samples <- sample1
 
-##################################################
-# THIS IS THE CURRENT  MODULE THAT WORKS !!!!!   #
-##################################################
+len1<-nrow(QC_list[[1]])
+len2<-nrow(QC_list[[2]])
 
-sumdf <- data.frame(	SNV_ID = rep("", samples),
-			Variants = rep(0, samples),
-			Rows = rep("", samples),
-			stringsAsFactors = FALSE)
-
-for (rj in seq(samples)) 	{
-			sid <- colnames(QC_list[[rj]])
-			varn <- nrow(QC_list[[rj]])
-
-sumdf$SNV_ID[rj] <- sid
-sumdf$Variants[rj] <- varn
-
-
-# For each of the list of samples
-len <- nrow(QC_list[[rj]])
-
-	if ( len > 0 ){
-
+if (len1 > len2)	len <- len1
+if (len1 < len2)	len <- len2
+if (len1 == len2)	len <- len1
 
 d.frame <- data.frame(	     ID = rep("", len),
- 			     framename = rep (0, len),
+ 			     FFPE = rep (0, len),
+ 			     Frozen = rep (0, len),
 			     stringsAsFactors = FALSE)
+# Col1 is the ID
+for (rj in seq(2:samples) ) 	{
 
-if (check == "freq" ) names(d.frame)[2] <- "Varalfreq"
-if (check == "depth" ) names(d.frame)[2] <- "Seqdepth"
+sum1<-"NULL"
+assign(paste("Sample", rj, sep=""), sum1)
 
-for (ri in seq(len) ) 	{
+FFPE<-QC_list[[1]][c(1,rj)]
+FFPEa <- na.omit(FFPE[order(FFPE$ID), ]) 
+FFPEdat <- FFPEa[which(!duplicated(FFPEa$ID)),]
 
-d.frame$ID[ri] <- as.character(QC_list[[rj]][ri])
-if (check == "calls")	d.frame$Calls[ri] <- geno(vcf_list[[rj]][ri])$GT
-if (check == "freq")	d.frame$Varalfreq[ri] <- geno(vcf_list[[rj]][ri])$VF
-if (check == "depth")	d.frame$Seqdepth[ri] <- geno(vcf_list[[rj]][ri])$DP
+Frozen<-QC_list[[2]][c(1,rj)]
+Frozena <- na.omit(Frozen[order(Frozen$ID), ]) 
+Frozendat <- Frozena[which(!duplicated(Frozena$ID)),]
 
-			} 
+sum1 <- merge(FFPEdat, Frozendat, by="ID", all=TRUE)
 
-# unique freq val or seq depth for summary plot
-# must be the same length as names(d.frame)
-names(d.frame)[2] <- paste(sid)
-
-
-			} else { d.frame <- "NULL" };
-
-assign(paste("Nuclei", rj, sep=""), d.frame)
-
-# for first value 
-	if ( rj == 1 && d.frame != "NULL"  ) {
-		first <- d.frame }
- 
-# combining successive data.frames
-	if ( rj == 2 && d.frame != "NULL"  ) { 
-		sum1 <- merge(first, d.frame, by="ID", all=TRUE) }
-
-# combining successive data.frames
-	if ( rj > 2 && d.frame != "NULL"  ) { 
-		a <- count(1)
-		sum1 <- merge(sum1, d.frame, by="ID", all=TRUE) 
-		} else { print("skip") }
-
-}
+assign(paste("Sample", rj, sep=""), sum1)
 
 
-write.table(sum1,file=csvfile,sep=",",row.names=FALSE,col.names=TRUE)
-
-#####################################
-##### END OF READ VCF MODULE ########
-#####################################
-
-## Processing position information
-## ie color label row side col as HCT, hTert or shared 
-
-# combine into one file
-hh<-rbind(hct116,htert)
-all<-rbind(shared,hh)
-######################################################################
-# Read and plot the Temp Correlations for each file and out each as a PDF
-for (i in 1:length(file_names)) {  
-
-        # Filter out incomplete cases for flagging                          
-        filt <- QC_list[[i]][!complete.cases(QC_list[[i]]),]
-        # Include only complete cases with no NA values
-        cases <- na.omit(QC_list[[i]])
-
-        # Gets the sample type T,N,Xn etc from the name
-        sample <- strsplit(colnames(QC_list[[i]]), split="_")[[2]][2]
-        name <- paste(paste("Temp_Corr",SA,sep="_"), sample, sep="-")
-        fname <- paste(path,name,sep="/")
+        name <- paste("Frozen-FFPE-Sample", rj, sep="")
+        fname <- paste(path,name,sep="\\")
+        
 
         # Output each as a separate PDF
-        pdf (file=paste(fname, ".pdf", sep=""))
+        pdf (file=paste(fname, "pdf", sep="."))
 
         # Formats the plots
-        title <- paste(paste("Correlation of Amplicon Melting Temperatures for", SA, sep=" "), sample, sep="-")
-        plot(cases$Actual_Temp, cases$Cal_Temp, xlab="Actual Amplicon melting Temperature", ylab="Calculated Amplicon Melting Temp", main=title, pch=19, ylim=c(60,100), xlim=c(60,100))
+        title <- paste("Correlation of Methods for", name, sep=" ")
+        plot(sum1, title=title)
+        dev.off()
 
-        # This section prints out the wells that failed (missing data or no data)
-        createCounter <- function(value) { function(j) { value <<- value+j} }
-        counter <- createCounter(60)
+	csvfile<- paste(fname,"csv",sep=".")
+	write.table(sum1,file=csvfile,sep=",",row.names=FALSE,col.names=TRUE)
 
-                text(70,68, "Wells with missing data / no data:")
-                for (j in 1:length(filt$PCR_well)) {x <- counter(round(40/length(filt$PCR_well))); text(x, 65, filt$PCR_well[j], cex=0.6); print(x)}
-
-        # This labels every other point on the plot for QC purposes
-        textxy(cases$Actual_Temp, cases$Cal_Temp, cases$PCR_well, cx=0.8, m=c(mean(cases$Actual_Temp),mean(cases$Cal_Temp)))
-
-        dev.off() 
+ 
 
         print("end")
 
 }
 
-q()
+
