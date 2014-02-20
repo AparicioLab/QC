@@ -56,7 +56,7 @@ d.frame <- data.frame(	     ID = rep("", len),
  			     Frozen = rep (0, len),
 			     stringsAsFactors = FALSE)
 # Col1 is the ID
-for (rj in seq(2:samples) ) 	{
+for (rj in 2:samples ) 	{
 
 sum1<-"NULL"
 assign(paste("Sample", rj, sep=""), sum1)
