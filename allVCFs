@@ -1,7 +1,7 @@
 ################################################################################
 ####        WSOP2013-001 Target Validation DeepSeq on MiSeq                 ####
 ####           SOP2013-002:  Post-Miseq Run Procedure SOP                   ####
-####        							    ####
+####        					   		            ####
 ####                written by Dr D Yap, 22 May 2013                        ####
 ####               modified by Dr D Yap, 22 Feb 2014                        ####
 ################################################################################
@@ -27,32 +27,20 @@ library(lattice)
 # For QC of Run files
 
 # For Pipeline QC
-# Name of Single Cell Sample
-name="SA501"
-RUNID="A4GFU"
+# Name of Project
+Project="IntClust"
+RUNID="A7DWM"
 
-# MOMAC 14
-# RunID="130603_M00897_0033_000000000-A49AR"
-# Alignment="Alignment"
-# Aligndir=paste(paste("/Volumes/Monco/MiSeq Run Files/MiSeq Analysis Files",RunID,sep="/"), "Data/Intensities/BaseCalls", sep="/")
-# direc=paste(Aligndir,Alignment,sep="/")
-
-# Single Cell
-#basedir="/home/dyap/Projects/Single_Cell/Analysis"
-#run=paste(name,RUNID,sep="-")
-#direc=paste(basedir, run, sep="/")
-
-# Tumour Evol / Xeno
-direc=paste("/home/dyap/Projects/Tumour_Evol", name, sep="/")
+direc=paste(paste("C:\\Users\\dyap_000\\Documents\\R",Project, sep="\\"),RUNID,sep="\\")
 
 setwd(direc)
 
 ##############################
 
 
-# Select type of variants
-#expt="all"
-expt="selected"
+# Select type of variants (for IntClust use "all")
+expt="all"
+#expt="selected"
 # Select type of QC - only one type
 type="freq"
 # type="reads"
@@ -63,6 +51,9 @@ if ( expt == "all" && type == "freq") append="allfreq"
 if ( expt == "selected" && type == "reads") append="reads"
 if ( expt == "selected" && type == "freq") append="freq"
 
+#name="Frozen"
+name="FFPE"
+
 csvfile=paste(paste(name,append,sep="-"),"csv",sep=".")
 pdffile=paste(paste(name,append,sep="-"),"pdf",sep=".")
 namefile=paste(paste(paste("Name", name, sep="-"), append, sep="-"),"csv",sep=".")
@@ -70,7 +61,6 @@ namefile=paste(paste(paste("Name", name, sep="-"), append, sep="-"),"csv",sep=".
 graphtitle=paste(expt, paste(paste(paste(type, name, sep=" "), "Run-ID", sep=" "), RUNID, sep="-"), sep=" ")
 
 #######################################
-
 
 # change to either all or selected vcf or svcf
 # read txt files with names of the form *.vcf (all variants called my BWA/GATK - MSR)
@@ -96,9 +86,9 @@ count <- createCounter(1)
 
 
 
-#########################################################
+######################################################################
 #     Change this to output Var Freq or Seq Depth (no of reads)      #
-#########################################################
+######################################################################
 
 
 name.frame <- data.frame(	Sample_ID = rep("", samples),
@@ -208,7 +198,6 @@ write.table(name.frame,file=namefile,sep=",",row.names=FALSE,col.names=TRUE)
 
 # Write csv
 write.table(sum1,file=csvfile,sep=",",row.names=FALSE,col.names=TRUE)
-# write.table(obj_name,file="C:\\Users\\dyap_000\\Documents\\R\\SA494\\SA494.csv",sep=",",append=TRUE,row.names=FALSE,col.names=FALSE)
 
 ##########################################################
 
@@ -227,8 +216,6 @@ rownames(ef) <- sum1$ID
 
 ########################################################
 
-# pdf("SA429-allfreq.pdf", width=10, height=4)
-# pdf("SA494B-freq.pdf", width=10, height=4)
 pdf(pdffile, width=10, height=4)
 
 ###################
