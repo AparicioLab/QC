@@ -28,8 +28,8 @@ library(lattice)
 
 # For Pipeline QC
 # Name of Project
-Project="IntClust"
-RUNID="A7DWM"
+Project="gp140"
+RUNID="A7NLK"
 
 direc=paste(paste("C:\\Users\\dyap_000\\Documents\\R",Project, sep="\\"),RUNID,sep="\\")
 
@@ -42,8 +42,8 @@ setwd(direc)
 expt="all"
 #expt="selected"
 # Select type of QC - only one type
-type="freq"
-# type="reads"
+# type="freq"
+type="reads"
 # type="calls"
 
 if ( expt == "all" && type == "reads") append="allreads"
@@ -52,7 +52,8 @@ if ( expt == "selected" && type == "reads") append="reads"
 if ( expt == "selected" && type == "freq") append="freq"
 
 #name="Frozen"
-name="FFPE"
+#name="FFPE"
+name="gp140"
 
 csvfile=paste(paste(name,append,sep="-"),"csv",sep=".")
 pdffile=paste(paste(name,append,sep="-"),"pdf",sep=".")
@@ -67,8 +68,8 @@ graphtitle=paste(expt, paste(paste(paste(type, name, sep=" "), "Run-ID", sep=" "
 # file_names = list.files(pattern = '*[0-9].vcf');
 # read txt files with names of the form *.svcf (only variants that we look for)
 # file_names = list.files(pattern = '*[0-9].svcf');
-if ( expt == "all") pat =paste(name, "*.*[0-9].vcf", sep="")
-if ( expt == "selected") pat =paste(name, "*.*[0-9].svcf", sep="")
+if ( expt == "all") pat = '*[0-9].vcf'
+if ( expt == "selected") pat ='*[0-9].svcf'
 
 #file_names = list.files(pattern = pat)
 file_names = list.files(pattern = pat)
