@@ -31,7 +31,7 @@ library(lattice)
 Project="gp140"
 RUNID="A7NLK"
 
-direc=paste(paste("C:\\Users\\dyap_000\\Documents\\R",Project, sep="\\"),RUNID,sep="\\")
+direc=paste(paste("/home/dyap/Projects",Project, sep="/"),RUNID,sep="/")
 
 setwd(direc)
 
@@ -43,11 +43,16 @@ expt="all"
 #expt="selected"
 # Select type of QC - only one type
 # type="freq"
-type="reads"
+# type="reads"
+type="alreads"
+# type="wtreads"
 # type="calls"
 
 if ( expt == "all" && type == "reads") append="allreads"
 if ( expt == "all" && type == "freq") append="allfreq"
+if ( expt == "all" && type == "alreads") append="altreads"
+if ( expt == "all" && type == "wtreads") append="wtreads"
+
 if ( expt == "selected" && type == "reads") append="reads"
 if ( expt == "selected" && type == "freq") append="freq"
 
@@ -124,13 +129,17 @@ d.frame <- data.frame(	     ID = rep("position", len),
 if (type == "calls") names(d.frame)[2] <- "Calls"
 if (type == "freq") names(d.frame)[2] <- "Varalfreq"
 if (type == "reads") names(d.frame)[2] <- "Seqdepth"
+if (type == "alreads") names(d.frame)[2] <- "Aledepth"
+if (type == "wtreads") names(d.frame)[2] <- "WTdepth"
 
 for (ri in seq(len) ) 	{
 
 	d.frame$ID[ri] <- rownames(vcf_list[[rj]][ri])
-if (type == "calls")  d.frame$Calls[ri] <- geno(vcf_list[[rj]][ri])$GT
-if (type == "freq")  d.frame$Varalfreq[ri] <- geno(vcf_list[[rj]][ri])$VF
-if (type == "reads") d.frame$Seqdepth[ri] <- geno(vcf_list[[rj]][ri])$DP
+if (type == "calls")  d.frame$Calls[ri] <- geno(vcf_list[[rj]][ri])$GT[1]
+if (type == "freq")  d.frame$Varalfreq[ri] <- geno(vcf_list[[rj]][ri])$VF[1]
+if (type == "wtreads") d.frame$WTdepth[ri] <- geno(vcf_list[[rj]][ri])$AD[[1]][1]
+if (type == "alreads") d.frame$Aledepth[ri] <- geno(vcf_list[[rj]][ri])$AD[[1]][2]
+if (type == "reads") d.frame$Seqdepth[ri] <- info(vcf_list[[rj]][ri])$DP
 
 			} 
 
@@ -230,6 +239,7 @@ if (type == "freq") levelplot(ef, xlab="Variant", las=2, ylab="Samples", main=gr
 
 if (type == "reads") levelplot(ef, xlab="Variant", las=2, ylab="Samples", main=graphtitle, col.regions=rgb.palette(200), cuts=200, at=seq(20,5020,200), aspect="fill", scales=list(x=list(rot=90, cex=0.3),y=list(cex=0.5)) )
 
+if (type == "alreads") levelplot(ef, xlab="Variant", las=2, ylab="Samples", main=graphtitle, col.regions=rgb.palette(1000), cuts=1000, at=seq(500,150000,300), aspect="fill", scales=list(x=list(rot=90, cex=0.8),y=list(cex=0.5)) )
 
 dev.off()
 
