@@ -42,9 +42,9 @@ setwd(direc)
 expt="all"
 #expt="selected"
 # Select type of QC - only one type
-type="freq"
+# type="freq"
 # type="reads"
-# type="alreads"
+type="alreads"
 # type="wtreads"
 # type="calls"
 
@@ -197,7 +197,11 @@ name.frame
 
 # Removing duplicates
 sum2<-sum1
-sum1<-sum2[!duplicated(lapply(sum2, summary))]
+sum3<-sum2[!duplicated(lapply(sum2, summary))]
+
+# Specific to particular example (remove artifacts manually)
+# sum1<-sum3[-c(12, 36,37,38,39), ]
+sum1<-sum3
 
 ########################################
 # STOP HERE TO CHECK BEFORE PROCEEDING #
@@ -243,9 +247,11 @@ max_value<-max(sum1[2:ncol(sum1)], na.rm=TRUE)
 
 # Determine your cut off manually
 # deep-seq reads
-# min_value<-100
+if (type == "reads") min_value<-100
+if (type == "alreads") min_value<-100
+
 # allele freq
-min_value<-0.05
+if (type == "freq") min_value<-0.05
 
 interval<-(max_value-min_value)/min_value
 
