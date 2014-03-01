@@ -25,8 +25,8 @@ library(lattice)
 
 # For Pipeline QC
 # Name of Single Cell Sample
-name="SA501"
-RUNID="A4GFU"
+name="GP140"
+RUNID="A7NLK"
 
 # MOMAC 14
 # RunID="130603_M00897_0033_000000000-A49AR"
@@ -40,16 +40,16 @@ RUNID="A4GFU"
 #direc=paste(basedir, run, sep="/")
 
 # Tumour Evol / Xeno
-direc=paste("/home/dyap/Projects/Tumour_Evol", name, sep="/")
-
+#direc=paste("/home/dyap/Projects/Tumour_Evol", name, sep="/")
+direc="/home/dyap/Projects/gp140/A7NLK/rad-vcf"
 setwd(direc)
 
 ##############################
 
 
 # Select type of variants
-#expt="all"
-expt="selected"
+expt="all"
+# expt="selected"
 # Select type of QC - only one type
 type="freq"
 # type="reads"
