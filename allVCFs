@@ -140,7 +140,11 @@ if (type == "freq")  d.frame$Varalfreq[ri] <- geno(vcf_list[[rj]][ri])$VF[1]
 if (type == "wtreads") d.frame$WTdepth[ri] <- geno(vcf_list[[rj]][ri])$AD[[1]][1]
 if (type == "alreads") d.frame$Aledepth[ri] <- geno(vcf_list[[rj]][ri])$AD[[1]][2]
 if (type == "reads") d.frame$Seqdepth[ri] <- info(vcf_list[[rj]][ri])$DP
-
+# for vcf4.1 from samtools 
+# d.frame$depthRefFwd[ri] <- (info(vcf_list[[1]][2])$DP4)[[1]][1]
+# d.frame$depthRefRev[ri] <- (info(vcf_list[[1]][2])$DP4)[[1]][2]
+# d.frame$depthAltFwd[ri] <- (info(vcf_list[[1]][2])$DP4)[[1]][3]
+# d.frame$depthAltRev[ri] <- (info(vcf_list[[1]][2])$DP4)[[1]][4]
 			} 
 
 # unique freq val or seq depth for summary plot
