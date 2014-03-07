@@ -28,12 +28,17 @@ library(lattice)
 
 # For Pipeline QC
 # Name of Project
-Project="gp140"
-RUNID="A7NLK"
+Project="IntClust"
+RUNID="A7DWM"
 
-direc=paste(paste("/home/dyap/Projects",Project, sep="/"),RUNID,sep="/")
+# Outputs
+# system('mkdir C:\\Users\\dyap_000\\Documents\\R\\SA494')
 
-setwd(direc)
+dir=paste(paste("C:\\Users\\dyap_000\\Documents\\R\\",Project,sep="\\"),RUNID,sep="\\")
+setwd(dir)
+
+#direc=paste(paste("/home/dyap/Projects",Project, sep="/"),RUNID,sep="/")
+#setwd(direc)
 
 ##############################
 
@@ -43,8 +48,8 @@ expt="all"
 #expt="selected"
 # Select type of QC - only one type
 # type="freq"
-# type="reads"
-type="alreads"
+type="reads"
+# type="alreads"
 # type="wtreads"
 # type="calls"
 
@@ -56,9 +61,9 @@ if ( expt == "all" && type == "wtreads") append="wtreads"
 if ( expt == "selected" && type == "reads") append="reads"
 if ( expt == "selected" && type == "freq") append="freq"
 
-#name="Frozen"
+name="Frozen"
 #name="FFPE"
-name="gp140"
+#name="gp140"
 
 csvfile=paste(paste(name,append,sep="-"),"csv",sep=".")
 pdffile=paste(paste(name,append,sep="-"),"pdf",sep=".")
@@ -199,13 +204,25 @@ for (des in seq(samples))
 # Check that that autolabelling is correct
 name.frame
 
-# Removing duplicates
+# Removing duplicates and no of row with NAs
+# Do not modify this statement
 sum2<-sum1
-sum3<-sum2[!duplicated(lapply(sum2, summary))]
 
+##################################################
+
+# Test from here
+
+
+sum3<-unique( sum2[ , 1:13 ] )
+sum4<-sum3[rowSums(is.na(sum3))< 13, ]
 # Specific to particular example (remove artifacts manually)
 # sum1<-sum3[-c(12, 36,37,38,39), ]
-sum1<-sum3
+sum4
+
+##################################################
+
+
+sum1<-sum4
 
 ########################################
 # STOP HERE TO CHECK BEFORE PROCEEDING #
