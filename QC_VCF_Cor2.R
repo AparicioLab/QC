@@ -1,6 +1,7 @@
 # R script to read in the calculated and obtained Tms of amplicons
 # Change the sample name between #### in this script to make it run correctly
 
+# install.packages("calibrate")
 library(calibrate)
 
 #######################################################################
