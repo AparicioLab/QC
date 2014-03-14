@@ -2,13 +2,17 @@
 # Generic models for mixing of two cell lines
 
 # source("http://www.bioconductor.org/biocLite.R"); biocLite("VariantAnnotation")
+# install.packages("gplots")
+# install.packages("RColorBrewer")
+# install.packages("Heatplus") # Not for 3.0.2
+# install.packages("limma") # Not for 3.0.2
 library("VariantAnnotation")
 library("IRanges")
 library("GenomicRanges")
 library(foreign)
 library(lattice)
-require(Heatplus)
-library(limma)
+#require(Heatplus)
+#library(limma)
 library(gplots)
 library(RColorBrewer)
 #####
@@ -155,7 +159,7 @@ all<-rbind(shared,hh)
 
 # Select n colors (n+1 = for unclassfied)
 n <- length(table(all$V3))
-rowcol<-brewer.pal(n+1, "Accent")
+rowcol<-brewer.pal(n+1, "Accent")li
 
 posinfo <- data.frame(	ID = rep("", nrow(all)),
 			Type = rep("", nrow(all)),
