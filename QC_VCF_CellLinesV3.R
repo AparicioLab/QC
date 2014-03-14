@@ -2,17 +2,18 @@
 # Generic models for mixing of two cell lines
 
 # source("http://www.bioconductor.org/biocLite.R"); biocLite("VariantAnnotation")
+# source("http://www.bioconductor.org/biocLite.R"); biocLite("limma")
+#  source("http://www.bioconductor.org/biocLite.R"); biocLite("Heatplus")
 # install.packages("gplots")
 # install.packages("RColorBrewer")
-# install.packages("Heatplus") # Not for 3.0.2
-# install.packages("limma") # Not for 3.0.2
+
 library("VariantAnnotation")
 library("IRanges")
 library("GenomicRanges")
 library(foreign)
 library(lattice)
-#require(Heatplus)
-#library(limma)
+require(Heatplus)
+library(limma)
 library(gplots)
 library(RColorBrewer)
 #####
