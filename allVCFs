@@ -31,7 +31,8 @@ library(lattice)
 #Project="IntClust"
 #RUNID="A7DWM"
 Project="UBC_SS_QC"
-RUNID="A6WJ8"
+#RUNID="A6WJ8"
+RUNID="A7P6R"
 
 # Outputs
 # system('mkdir C:\\Users\\dyap_000\\Documents\\R\\SA494')
@@ -63,7 +64,8 @@ if ( expt == "all" && type == "wtreads") append="wtreads"
 if ( expt == "selected" && type == "reads") append="reads"
 if ( expt == "selected" && type == "freq") append="freq"
 
-name="184-hTERTUBC"
+name="HCT116UBC"
+#name="184-hTERTUBC"
 #name="FFPE"
 #name="gp140"
 
