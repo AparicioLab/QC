@@ -28,8 +28,10 @@ library(lattice)
 
 # For Pipeline QC
 # Name of Project
-Project="IntClust"
-RUNID="A7DWM"
+#Project="IntClust"
+#RUNID="A7DWM"
+Project="UBC_SS_QC"
+RUNID="A6WJ8"
 
 # Outputs
 # system('mkdir C:\\Users\\dyap_000\\Documents\\R\\SA494')
@@ -61,7 +63,7 @@ if ( expt == "all" && type == "wtreads") append="wtreads"
 if ( expt == "selected" && type == "reads") append="reads"
 if ( expt == "selected" && type == "freq") append="freq"
 
-name="Frozen"
+name="184-hTERTUBC"
 #name="FFPE"
 #name="gp140"
 
@@ -212,9 +214,11 @@ sum2<-sum1
 
 # Test from here
 
-
-sum3<-unique( sum2[ , 1:14 ] )
-sum4<-sum3[rowSums(is.na(sum3))< 14, ]
+totcol<-ncol(sum2)
+totrow<-nrow(sum2)
+sum3<-unique( sum2[ 1:totrow, 1:totcol] )
+percent=as.integer(0.9*totcol)
+sum4<-sum3[rowSums(is.na(sum3))< percent, ]
 # Specific to particular example (remove artifacts manually)
 # sum1<-sum3[-c(12, 36,37,38,39), ]
 sum4
@@ -268,8 +272,8 @@ max_value<-max(sum1[2:ncol(sum1)], na.rm=TRUE)
 
 # Determine your cut off manually
 # deep-seq reads
-if (type == "reads") min_value<-100
-if (type == "alreads") min_value<-100
+if (type == "reads") min_value<-10
+if (type == "alreads") min_value<-10
 
 # allele freq
 if (type == "freq") min_value<-0.05
@@ -279,7 +283,7 @@ interval<-(max_value-min_value)/min_value
 
 if (type == "freq") levelplot(ef, xlab="Variant", las=2, ylab="Samples", main=graphtitle, col.regions=rgb.palette(50), at=seq(min_value,1.0,0.05), aspect="fill", scales=list(x=list(rot=90, cex=0.8),y=list(cex=0.5)) )
 
-if (type == "reads") levelplot(ef, xlab="Variant", las=2, ylab="Samples", main=graphtitle, col.regions=rgb.palette(interval), at=seq(min_value,max_value,interval), aspect="fill", scales=list(x=list(rot=90, cex=0.2),y=list(cex=0.8)) )
+if (type == "reads") levelplot(ef, xlab="Variant", las=2, ylab="Samples", main=graphtitle, col.regions=rgb.palette(interval), at=seq(min_value,max_value,interval), aspect="fill", scales=list(x=list(rot=90, cex=0.4),y=list(cex=0.4)) )
 
 if (type == "alreads") levelplot(ef, xlab="Variant", las=2, ylab="Samples", main=graphtitle, col.regions=rgb.palette(interval), at=seq(min_value,max_value,interval), aspect="fill", scales=list(x=list(rot=90, cex=0.8),y=list(cex=0.5)) )
 
