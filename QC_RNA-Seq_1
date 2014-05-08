@@ -1,0 +1,159 @@
+# QC For Cell line mixing project
+# Generic models for mixing of two cell lines
+
+# source("http://www.bioconductor.org/biocLite.R"); biocLite("VariantAnnotation")
+# source("http://www.bioconductor.org/biocLite.R"); biocLite("limma")
+#  source("http://www.bioconductor.org/biocLite.R"); biocLite("Heatplus")
+# install.packages("gplots")
+# install.packages("RColorBrewer")
+
+library("VariantAnnotation")
+library("IRanges")
+library("GenomicRanges")
+library(foreign)
+library(lattice)
+require(Heatplus)
+library(limma)
+library(gplots)
+library(RColorBrewer)
+#####
+
+project<-"PPP2R2A"
+expt<-"RNAseq"
+
+# Outputs
+dir=paste(paste("/home/dyap/Projects/",project,sep="/"),expt,sep="/")
+setwd(dir)
+
+# Load the datasets (note that they are differentials)
+diffnoE2<-read.table("IN2071_IX2069_toptags_edgeR-E2.txt")
+diffwithE2<-read.table("IN2072_IX2070_toptags_edgeR+E2.txt")
+
+# Colour labelling of cell type specific genes
+lum<-read.table("luminal-Cell.txt")
+lum$V2<-"Luminal"
+bas<-read.table("myoEBasal-Cell.txt")
+bas$V2<-"MyoBasal"
+cell<-rbind(lum,bas)
+
+n <- length(table(cell$V2))
+rowcol<-brewer.pal(n+1, "Accent")
+
+posinfo <- data.frame(	Gene = rep("", nrow(cell)),
+			Celltype = rep("", nrow(cell)),
+			Col = rep("", nrow(cell)),
+			stringsAsFactors = FALSE)
+
+for (a in seq(nrow(cell)))
+	{
+	Gene <- as.character(cell$V1[a])
+	Celltype <- cell$V2[a]
+
+	posinfo$Gene[a] <- Gene
+	posinfo$Celltype[a] <- Celltype
+
+	for ( b in seq(n) )
+		{
+		if (Celltype == names(table(cell$V2)[b])) color=rowcol[b]
+		}
+
+
+	posinfo$Col[a] <- color
+
+	}
+
+
+# Legend info posinfo$Types and posinfo$Col
+legend=rownames(table(posinfo[2:3]))
+legend[n+1]="unclassified"
+
+fill=colnames(table(posinfo[2:3]))
+fill[n+1]=rowcol[n+1]
+
+# Select only those <0.01 FDR (basically unselected if 1)
+difE2<-diffwithE2[diffwithE2[,"FDR"]<1,]
+dif<-diffnoE2[diffnoE2[,"FDR"]<1,]
+
+# set them as matricies
+d1<-as.matrix(dif)
+d2<-as.matrix(difE2) 
+
+d0<-as.matrix(d1[,c(1)])
+d3<-as.matrix(d2[,c(1)])
+
+# Labelling them has no use
+colnames(d0)[1]<-"+E2"
+colnames(d3)[1]<-"-E2"
+
+dataset<-merge(d0,d3, by="row.names", ALL="TRUE")
+# Replace N/A with 0, if reqd
+dataset[is.na(dataset)] <- 0
+ef<-as.matrix(dataset[2:3])
+rownames(ef) <- dataset$Row.names
+
+# Check which column is which dataset after merging
+subset(dataset, regexpr("ARHGAP15", dataset$Row.names) > 0)
+head(d0)
+head(d3)
+
+# Rowside color matrix
+rsc <- data.frame(	ID = rep("", nrow(ef)),
+			Col = rep("", nrow(ef)),
+			stringsAsFactors = FALSE)
+
+# Get the colors for different types of positions
+for (j in seq(nrow(ef)))
+	{
+	match <- rownames(ef)[j]
+	rsc$ID[j]<- match
+	test <- posinfo[posinfo[,1] %in% c(match),3]
+	if (length(test) != 0) 
+		{
+		rsc$Col[j] <- test
+		} else {
+		# Unclassified positions
+		rsc$Col[j] <- rowcol[n+1]
+		}
+
+	}
+
+bk = unique(c(seq(-3,0.1, length=10),seq(0.1,4,length=10)))
+hmcols<- colorRampPalette(brewer.pal(11,"Spectral"))(length(bk)-1)
+
+heatmap.2(ef, main="siPPP2R2A Differential between +/- E2", xlab="Condition", col=hmcols, breaks = bk, Colv=FALSE, dendrogram="row", key=TRUE, symm=F, symbreaks=T, scale="none", trace="none", RowSideColors=rsc$Col, labRow=NA, labCol=NA)
+
+
+# New matrix gf (selected positions)
+
+gf <- ef[rownames(ef) %in% posinfo$Gene,]
+
+# Rowside color matrix
+rsc <- data.frame(	ID = rep("", nrow(gf)),
+			Col = rep("", nrow(gf)),
+			stringsAsFactors = FALSE)
+
+# Get the colors for different types of positions
+for (j in seq(nrow(gf)))
+	{
+	match <- rownames(gf)[j]
+	rsc$ID[j]<- match
+	test <- posinfo[posinfo[,1] %in% c(match),3]
+	if (length(test) != 0) 
+		{
+		rsc$Col[j] <- test
+		} else {
+		# Unclassified positions
+		rsc$Col[j] <- rowcol[n+1]
+		}
+
+	}
+
+
+pdf("pdffile2", width=7, height=8)
+
+heatmap.2(gf, main="Cell type gene between siPPP2R2A +/- E2", xlab="Conditions", ylab="Gene", scale="none", key = TRUE
+, cexCol=1.5, cexRow=1.0, col = hmcols, RowSideColors=rsc$Col, trace="none")
+
+legend("topright",legend=legend, fill=fill, border=TRUE, bty="o", y.intersp = 0.7, cex=0.7)
+
+dev.off()
